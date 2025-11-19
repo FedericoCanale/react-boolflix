@@ -42,6 +42,17 @@ export default function Main() {
             <h2>Risultati</h2>
 
             {movies.length === 0 && <p>Nessun film trovato.</p>}
+
+            <ul>
+                {movies.map((movie) => (
+                    <li key={movie.id}>
+                        <p><strong>Titolo:</strong> {movie.title}</p>
+                        <p><strong>Titolo originale:</strong> {movie.original_title}</p>
+                        <p><strong>Lingua:</strong> {movie.original_language}</p>
+                        <p><strong>Voto:</strong> {movie.vote_average}</p>
+                    </li>
+                ))}
+            </ul>
         </>
     );
 }
