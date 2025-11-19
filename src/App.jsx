@@ -1,10 +1,5 @@
-import Main from "./components/Main.jsx";
+import Main from "./components/Main";
 
 export default function App() {
-  return (
-    <>
-      <Main />
-    </>
-  );
+  return <Main />;
 }
-
