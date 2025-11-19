@@ -4,6 +4,27 @@ import axios from "axios";
 const API_KEY = import.meta.env.VITE_MOVIE_DB_API_KEY;
 const API_URL = import.meta.env.VITE_MOVIE_URL;
 
+// mappa codice lingua → bandiera
+const languageToFlag = {
+    en: "🇬🇧",
+    it: "🇮🇹",
+    fr: "🇫🇷",
+    es: "🇪🇸",
+    de: "🇩🇪",
+    ja: "🇯🇵",
+    ko: "🇰🇷",
+    zh: "🇨🇳",
+    hi: "🇮🇳",
+};
+
+// helper per ottenere la bandiera o il codice come fallback
+function getLanguageFlag(langCode) {
+    if (languageToFlag[langCode]) {
+        return languageToFlag[langCode];
+    }
+    return langCode;
+}
+
 export default function Main() {
     const [query, setQuery] = useState("");
     const [movies, setMovies] = useState([]);
@@ -17,7 +38,7 @@ export default function Main() {
             .get(API_URL, {
                 params: {
                     api_key: API_KEY,
-                    query: query
+                    query: query,
                 },
             })
             .then((res) => {
@@ -46,10 +67,18 @@ export default function Main() {
             <ul>
                 {movies.map((movie) => (
                     <li key={movie.id}>
-                        <p><strong>Titolo:</strong> {movie.title}</p>
-                        <p><strong>Titolo originale:</strong> {movie.original_title}</p>
-                        <p><strong>Lingua:</strong> {movie.original_language}</p>
-                        <p><strong>Voto:</strong> {movie.vote_average}</p>
+                        <p>
+                            <strong>Titolo:</strong> {movie.title}
+                        </p>
+                        <p>
+                            <strong>Titolo originale:</strong> {movie.original_title}
+                        </p>
+                        <p>
+                            <strong>Lingua:</strong> {getLanguageFlag(movie.original_language)}
+                        </p>
+                        <p>
+                            <strong>Voto:</strong> {movie.vote_average}
+                        </p>
                     </li>
                 ))}
             </ul>
