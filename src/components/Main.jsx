@@ -1,15 +1,28 @@
 import { useState } from "react";
+import axios from "axios";
+
+const API_KEY = import.meta.env.VITE_MOVIE_DB_API_KEY;
+const API_URL = import.meta.env.VITE_MOVIE_URL;
 
 export default function Main() {
     const [query, setQuery] = useState("");
-    const [movies, setMovies] = useState([]); // per ora non lo usiamo davvero
+    const [movies, setMovies] = useState([]);
 
     function handleInputChange(event) {
         setQuery(event.target.value);
     }
 
     function handleSearchClick() {
-        console.log("Cerco il film:", query);
+        axios
+            .get(API_URL, {
+                params: {
+                    api_key: API_KEY,
+                    query: query
+                },
+            })
+            .then((res) => {
+                setMovies(res.data.results);
+            });
     }
 
     return (
