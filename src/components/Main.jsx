@@ -1,8 +1,11 @@
 import { useState } from "react";
 import axios from "axios";
 
-const API_KEY = import.meta.env.VITE_MOVIE_DB_API_KEY;
-const API_URL = import.meta.env.VITE_MOVIE_URL;
+const MOVIE_API_KEY = import.meta.env.VITE_MOVIE_DB_API_KEY;
+const MOVIE_URL = import.meta.env.VITE_MOVIE_URL;
+
+const SERIES_API_KEY = import.meta.env.VITE_SERIES_DB_API_KEY;
+const SERIES_URL = import.meta.env.VITE_SERIES_URL;
 
 // mappa codice lingua → bandiera
 const languageToFlag = {
@@ -17,7 +20,7 @@ const languageToFlag = {
     hi: "🇮🇳",
 };
 
-// helper per ottenere la bandiera o il codice come fallback
+
 function getLanguageFlag(langCode) {
     if (languageToFlag[langCode]) {
         return languageToFlag[langCode];
@@ -34,16 +37,44 @@ export default function Main() {
     }
 
     function handleSearchClick() {
-        axios
-            .get(API_URL, {
-                params: {
-                    api_key: API_KEY,
-                    query: query,
-                },
-            })
-            .then((res) => {
-                setMovies(res.data.results);
+
+        const movieParams = {
+            api_key: MOVIE_API_KEY,
+            query: query,
+        };
+
+
+        const seriesParams = {
+            api_key: SERIES_API_KEY,
+            query: query,
+        };
+
+        Promise.all([
+            axios.get(MOVIE_URL, { params: movieParams }),
+            axios.get(SERIES_URL, { params: seriesParams }),
+        ]).then(([moviesRes, seriesRes]) => {
+            const movieResults = moviesRes.data.results.map((item) => {
+                return {
+                    id: "movie-" + item.id,
+                    title: item.title,
+                    original_title: item.original_title,
+                    original_language: item.original_language,
+                    vote_average: item.vote_average,
+                };
             });
+
+            const seriesResults = seriesRes.data.results.map((item) => {
+                return {
+                    id: "series-" + item.id,
+                    title: item.name,
+                    original_title: item.original_name,
+                    original_language: item.original_language,
+                    vote_average: item.vote_average,
+                };
+            });
+
+            setMovies([...movieResults, ...seriesResults]);
+        });
     }
 
     return (
@@ -53,7 +84,7 @@ export default function Main() {
             <div>
                 <input
                     type="text"
-                    placeholder="Scrivi il nome di un film..."
+                    placeholder="Scrivi il nome di un film o serie..."
                     value={query}
                     onChange={handleInputChange}
                 />
@@ -62,7 +93,7 @@ export default function Main() {
 
             <h2>Risultati</h2>
 
-            {movies.length === 0 && <p>Nessun film trovato.</p>}
+            {movies.length === 0 && <p>Nessun risultato trovato.</p>}
 
             <ul>
                 {movies.map((movie) => (
