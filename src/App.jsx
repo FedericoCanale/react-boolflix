@@ -1,5 +1,10 @@
+import { MovieProvider } from "./context/MovieContext";
 import Main from "./components/Main";
 
 export default function App() {
-  return <Main />;
+  return (
+    <MovieProvider>
+      <Main />
+    </MovieProvider>
+  );
 }
