@@ -34,6 +34,8 @@ body {
     padding: 6px 10px;
 }
 
+
+
 .results-section {
     padding: 16px 24px;
 }
@@ -46,6 +48,8 @@ body {
     margin-top: 8px;
 }
 
+
+
 .results-list {
     list-style: none;
     padding: 0;
@@ -55,26 +59,50 @@ body {
     gap: 20px;
 }
 
+
+
 .result-card {
-    background-color: #111;
+    position: relative;
+    background-color: #000;
     border-radius: 6px;
     overflow: hidden;
 }
 
-.result-card img {
+.result-poster {
     width: 100%;
     display: block;
 }
 
-.result-info {
+
+.result-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    color: #fff;
     padding: 10px;
-    color: white;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 14px;
+    overflow-y: auto;
 }
 
-.result-info p {
-    margin: 4px 0;
-    font-size: 14px;
+
+.result-card:hover .result-overlay {
+    opacity: 1;
 }
+
+.result-type,
+.result-original-title,
+.result-language,
+.result-vote,
+.result-overview {
+    margin: 0;
+}
+
+
 
 .stars {
     display: inline-block;

@@ -1,4 +1,3 @@
-
 import {
     IMAGE_BASE_URL,
     IMAGE_SIZE,
@@ -41,22 +40,31 @@ export default function ResultCard({ movie }) {
 
     return (
         <li className="result-card">
-            {posterUrl && <img src={posterUrl} alt={movie.title} />}
+            {posterUrl && (
+                <img
+                    src={posterUrl}
+                    alt={movie.title}
+                    className="result-poster"
+                />
+            )}
 
-            <div className="result-info">
-                <p>
+            <div className="result-overlay">
+                <p className="result-type">
                     <strong>{movie.type === "movie" ? "Film" : "Serie"}:</strong>{" "}
                     {movie.title}
                 </p>
-                <p>
+                <p className="result-original-title">
                     <strong>Titolo originale:</strong> {movie.original_title}
                 </p>
-                <p>
+                <p className="result-language">
                     <strong>Lingua:</strong> {getLanguageFlag(movie.original_language)}
                 </p>
-                <p>
+                <p className="result-vote">
                     <strong>Voto:</strong>{" "}
                     <span className="stars">{getStars(movie.vote_average)}</span>
+                </p>
+                <p className="result-overview">
+                    <strong>Overview:</strong> {movie.overview}
                 </p>
             </div>
         </li>
