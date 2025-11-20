@@ -7,6 +7,10 @@ const MOVIE_URL = import.meta.env.VITE_MOVIE_URL;
 const SERIES_API_KEY = import.meta.env.VITE_SERIES_DB_API_KEY;
 const SERIES_URL = import.meta.env.VITE_SERIES_URL;
 
+// base URL per le immagini TMDB
+const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/";
+const IMAGE_SIZE = "w342"; // puoi cambiare dimensione se vuoi
+
 // mappa codice lingua → bandiera
 const languageToFlag = {
     en: "🇬🇧",
@@ -20,12 +24,19 @@ const languageToFlag = {
     hi: "🇮🇳",
 };
 
-
 function getLanguageFlag(langCode) {
     if (languageToFlag[langCode]) {
         return languageToFlag[langCode];
     }
     return langCode;
+}
+
+
+function getPosterUrl(posterPath) {
+    if (!posterPath) {
+        return null; // niente immagine se il path non c'è
+    }
+    return IMAGE_BASE_URL + IMAGE_SIZE + posterPath;
 }
 
 export default function Main() {
@@ -37,12 +48,10 @@ export default function Main() {
     }
 
     function handleSearchClick() {
-
         const movieParams = {
             api_key: MOVIE_API_KEY,
             query: query,
         };
-
 
         const seriesParams = {
             api_key: SERIES_API_KEY,
@@ -60,6 +69,7 @@ export default function Main() {
                     original_title: item.original_title,
                     original_language: item.original_language,
                     vote_average: item.vote_average,
+                    poster_path: item.poster_path,
                 };
             });
 
@@ -70,6 +80,7 @@ export default function Main() {
                     original_title: item.original_name,
                     original_language: item.original_language,
                     vote_average: item.vote_average,
+                    poster_path: item.poster_path,
                 };
             });
 
@@ -96,22 +107,33 @@ export default function Main() {
             {movies.length === 0 && <p>Nessun risultato trovato.</p>}
 
             <ul>
-                {movies.map((movie) => (
-                    <li key={movie.id}>
-                        <p>
-                            <strong>Titolo:</strong> {movie.title}
-                        </p>
-                        <p>
-                            <strong>Titolo originale:</strong> {movie.original_title}
-                        </p>
-                        <p>
-                            <strong>Lingua:</strong> {getLanguageFlag(movie.original_language)}
-                        </p>
-                        <p>
-                            <strong>Voto:</strong> {movie.vote_average}
-                        </p>
-                    </li>
-                ))}
+                {movies.map((movie) => {
+                    const posterUrl = getPosterUrl(movie.poster_path);
+
+                    return (
+                        <li key={movie.id}>
+                            {posterUrl && (
+                                <img
+                                    src={posterUrl}
+                                    alt={movie.title}
+                                />
+                            )}
+
+                            <p>
+                                <strong>Titolo:</strong> {movie.title}
+                            </p>
+                            <p>
+                                <strong>Titolo originale:</strong> {movie.original_title}
+                            </p>
+                            <p>
+                                <strong>Lingua:</strong> {getLanguageFlag(movie.original_language)}
+                            </p>
+                            <p>
+                                <strong>Voto:</strong> {movie.vote_average}
+                            </p>
+                        </li>
+                    );
+                })}
             </ul>
         </>
     );
